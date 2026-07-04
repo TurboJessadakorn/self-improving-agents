@@ -1,0 +1,60 @@
+cases:
+  - id: billing-refund
+    ticket: "I was charged twice for my subscription, please refund me."
+    expected_category: billing
+    expected_priority: medium
+    expected_phrase: "processed within 3-5 business days"
+
+  - id: technical-crash
+    ticket: "The app crashes every time I open the settings page."
+    expected_category: technical
+    expected_priority: high
+    expected_phrase: "our team will follow up shortly"
+
+  - id: account-login
+    ticket: "I can't log into my account, it says invalid password."
+    expected_category: account
+    expected_priority: medium
+    expected_phrase: "our team will follow up shortly"
+
+  - id: account-reset
+    ticket: "How do I reset my password?"
+    expected_category: account
+    expected_priority: medium
+    expected_phrase: "our team will follow up shortly"
+
+  - id: billing-invoice
+    ticket: "My invoice amount looks incorrect this month."
+    expected_category: billing
+    expected_priority: medium
+    expected_phrase: "processed within 3-5 business days"
+
+  - id: technical-error
+    ticket: "Getting a 500 error when submitting the form."
+    expected_category: technical
+    expected_priority: high
+    expected_phrase: "our team will follow up shortly"
+
+  - id: general-hours
+    ticket: "What are your business hours?"
+    expected_category: general
+    expected_priority: low
+    expected_phrase: "our team will follow up shortly"
+
+  - id: account-update
+    ticket: "I need to update my account email address."
+    expected_category: account
+    expected_priority: medium
+    expected_phrase: "our team will follow up shortly"
+
+  - id: technical-crash-2
+    ticket: "The app keeps crashing on startup, very frustrating."
+    expected_category: technical
+    expected_priority: high
+    expected_phrase: "our team will follow up shortly"
+
+  - id: billing-cancel
+    ticket: "I was charged for a plan I cancelled last month, please refund it."
+    expected_category: billing
+    expected_priority: medium
+    expected_phrase: "processed within 3-5 business days"
