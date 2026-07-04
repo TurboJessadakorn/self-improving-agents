@@ -1,0 +1,27 @@
+[project]
+name = "self-improving-agents"
+version = "0.1.0"
+description = "An eval-driven Coach agent that improves other agents' prompts in a multi-agent system."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.40.0"]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+sia = "self_improving_agents.cli:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
