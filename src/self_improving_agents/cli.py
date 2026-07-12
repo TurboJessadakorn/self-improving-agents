@@ -69,6 +69,14 @@ def cmd_coach(args: argparse.Namespace) -> None:
     print("\nfinal responder prompt:\n" + result.pipeline.responder.prompt)
 
 
+def cmd_serve(args: argparse.Namespace) -> None:
+    from .server.app import build_app
+
+    llm = _make_llm(args.llm, args.model)
+    app = build_app(llm)
+    app.ignite(host=args.host, port=args.port)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="sia", description="Self-improving agents: eval-driven prompt coaching.")
     parser.add_argument("--llm", choices=["mock", "anthropic"], default="mock", help="LLM backend to use.")
@@ -83,6 +91,11 @@ def build_parser() -> argparse.ArgumentParser:
     coach_parser = subparsers.add_parser("coach", help="Run the Coach's diagnose/propose/validate loop.")
     coach_parser.add_argument("--max-iterations", type=int, default=5)
     coach_parser.set_defaults(func=cmd_coach)
+
+    serve_parser = subparsers.add_parser("serve", help="Serve the pipeline as a LLAMPHouse server.")
+    serve_parser.add_argument("--host", default="127.0.0.1")
+    serve_parser.add_argument("--port", type=int, default=8000)
+    serve_parser.set_defaults(func=cmd_serve)
 
     return parser
 

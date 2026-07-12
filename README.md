@@ -41,6 +41,38 @@ export ANTHROPIC_API_KEY=...
 sia coach --llm anthropic --model claude-sonnet-5
 ```
 
+## Serving it
+
+The same classifier/responder pair can also be served as a real multi-agent
+server via [LLAMPHouse](https://github.com/llamp-ai/llamphouse), which
+exposes an OpenAI-compatible Assistants API:
+
+```bash
+pip install -e ".[server]"
+sia serve --port 8000
+```
+
+The classifier and responder are registered as two separate LLAMPHouse
+agents. The classifier classifies the incoming ticket, then calls
+`context.handover_to_agent("responder", ...)` -- passing the classification
+through the run's `metadata` (LLAMPHouse's `handover_to_agent` reuses the
+caller's thread and doesn't re-persist the handoff `message`, so metadata is
+the channel for structured handoff data; the responder reads the original
+ticket straight off the shared thread). Drive it with any OpenAI-compatible
+client:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:8000", api_key="any")
+thread = client.beta.threads.create()
+client.beta.threads.messages.create(
+    thread_id=thread.id, role="user",
+    content="I was charged twice for my subscription, please refund me.",
+)
+run = client.beta.threads.runs.create(thread_id=thread.id, assistant_id="classifier")
+```
+
 ## Layout
 
 ```
@@ -49,7 +81,8 @@ src/self_improving_agents/
   agents/    # classifier + responder agents, chained into a pipeline
   eval/      # eval cases, scoring, and the report runner
   coach/     # diagnose -> propose -> validate -> keep-if-better loop
-  cli.py     # `sia eval` / `sia coach`
+  server/    # LLAMPHouse Agent wrappers so the pipeline can run as a server
+  cli.py     # `sia eval` / `sia coach` / `sia serve`
 data/eval_cases/support_triage.yaml   # the 10-case fixture
 tests/
 ```
