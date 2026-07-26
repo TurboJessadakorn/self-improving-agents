@@ -41,6 +41,18 @@ export ANTHROPIC_API_KEY=...
 sia coach --llm anthropic --model claude-sonnet-5
 ```
 
+Or `--llm azure-openai`, using `--model` as your Azure deployment name (not
+a model name -- Azure OpenAI is addressed by whatever deployment name you
+configured in your own resource):
+
+```bash
+pip install -e ".[azure-openai]"
+export AZURE_OPENAI_API_KEY=...
+export AZURE_OPENAI_ENDPOINT=https://<resource>.openai.azure.com/
+export OPENAI_API_VERSION=2024-10-21
+sia coach --llm azure-openai --model my-deployment-name
+```
+
 ## Serving it
 
 The same classifier/responder pair can also be served as a real multi-agent
@@ -77,7 +89,7 @@ run = client.beta.threads.runs.create(thread_id=thread.id, assistant_id="classif
 
 ```
 src/self_improving_agents/
-  llm/       # provider-agnostic LLMClient interface (Mock + Anthropic backends)
+  llm/       # provider-agnostic LLMClient interface (Mock, Anthropic, Azure OpenAI backends)
   agents/    # classifier + responder agents, chained into a pipeline
   eval/      # eval cases, scoring, and the report runner
   coach/     # diagnose -> propose -> validate -> keep-if-better loop

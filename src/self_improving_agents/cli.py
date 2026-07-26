@@ -23,7 +23,15 @@ def _make_llm(backend: str, model: str | None) -> LLMClient:
 
         kwargs = {"model": model} if model else {}
         return AnthropicClient(**kwargs)
-    raise ValueError(f"Unknown LLM backend {backend!r}. Choose 'mock' or 'anthropic'.")
+    if backend == "azure-openai":
+        from .llm.azure_openai_client import AzureOpenAIClient
+
+        if not model:
+            raise ValueError(
+                "--model is required for --llm azure-openai (pass your Azure deployment name)"
+            )
+        return AzureOpenAIClient(deployment=model)
+    raise ValueError(f"Unknown LLM backend {backend!r}. Choose 'mock', 'anthropic', or 'azure-openai'.")
 
 
 def _print_report(report: EvalReport) -> None:
@@ -79,8 +87,12 @@ def cmd_serve(args: argparse.Namespace) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="sia", description="Self-improving agents: eval-driven prompt coaching.")
-    parser.add_argument("--llm", choices=["mock", "anthropic"], default="mock", help="LLM backend to use.")
-    parser.add_argument("--model", default=None, help="Model name, if the backend supports one.")
+    parser.add_argument("--llm", choices=["mock", "anthropic", "azure-openai"], default="mock", help="LLM backend to use.")
+    parser.add_argument(
+        "--model",
+        default=None,
+        help="Model name (anthropic) or Azure deployment name (azure-openai).",
+    )
     parser.add_argument("--cases", default=str(DEFAULT_CASES_PATH), help="Path to an eval cases YAML file.")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
