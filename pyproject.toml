@@ -10,6 +10,7 @@ dependencies = [
 
 [project.optional-dependencies]
 anthropic = ["anthropic>=0.40.0"]
+azure-openai = ["openai>=1.0.0"]
 server = ["llamphouse"]
 dev = ["pytest>=7.0"]
 
